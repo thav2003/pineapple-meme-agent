@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
 import banner from "@/assets/banner.jpg";
-import { Copy, ExternalLink, MessageCircle } from "lucide-react";
+import { Copy, ExternalLink, MessageCircle, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 
 const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
@@ -81,11 +82,22 @@ export const HeroSection = () => {
             <ExternalLink className="w-5 h-5 mr-2" />
             Try Agent on Swarms
           </Button>
+
+          <Button 
+            asChild
+            size="lg" 
+            className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-bold text-lg px-8"
+          >
+            <Link to="/dashboard">
+              <MessageSquare className="w-5 h-5 mr-2" />
+              Open Dashboard
+            </Link>
+          </Button>
           
           <Button 
             size="lg" 
             variant="outline"
-            className="border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground font-bold text-lg px-8"
+            className="border-muted-foreground text-foreground hover:bg-muted font-bold text-lg px-8"
             onClick={() => window.open("https://x.com/pine_swarms", "_blank")}
           >
             𝕏 Twitter
