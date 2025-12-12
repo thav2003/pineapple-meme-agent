@@ -31,7 +31,7 @@
     var params = new URLSearchParams(window.location.search);
     var redirect = params.get("redirect");
     if (redirect) {
-      // redirect có thể là "/dashboard/chat" hoặc "/dashboard/chat?x=1#hash"
+
       window.history.replaceState(null, "", redirect);
     }
   })();
