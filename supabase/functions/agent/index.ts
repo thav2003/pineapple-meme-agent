@@ -79,13 +79,15 @@ serve(async (req) => {
 
     const data = await response.json();
 
-    const reply =
-      data?.output ??
-      data?.response ??
-      data?.message ??
-      data?.content ??
-      data?.result ??
-      JSON.stringify(data);
+    // Extract the final reply from Swarms API outputs array
+    let reply = "";
+    if (data?.outputs && Array.isArray(data.outputs) && data.outputs.length > 0) {
+      // Get the last output's content (final answer)
+      const lastOutput = data.outputs[data.outputs.length - 1];
+      reply = lastOutput?.content ?? "";
+    } else {
+      reply = data?.output ?? data?.response ?? data?.message ?? data?.content ?? JSON.stringify(data);
+    }
 
     return new Response(
       JSON.stringify({
