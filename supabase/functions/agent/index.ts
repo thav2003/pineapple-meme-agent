@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
+const VERSION = "1.0.0"
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -11,6 +11,7 @@ const SYSTEM_PROMPT = `Aloha, I'm Pineapple Agent, your ridiculously spiky, outr
 
 const AGENT_DESCRIPTION = `Pineapple Agent is a cheerful, tropical AI buddy who brings sunshine and sweetness to every interaction! Designed for kids, this agent thinks like a juicy, spiky pineapple—always looking on the bright side, bursting with fun ideas, and ready to help with homework, games, or silly stories. With a playful tone and a love for all things fruity, Pineapple Agent makes learning and exploring feel like a tropical adventure!`;
 
+console.log("VERSION: " + VERSION)
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
