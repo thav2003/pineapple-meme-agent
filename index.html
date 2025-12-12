@@ -26,6 +26,16 @@
 
   <body>
     <div id="root"></div>
+    <script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var redirect = params.get("redirect");
+    if (redirect) {
+      // redirect có thể là "/dashboard/chat" hoặc "/dashboard/chat?x=1#hash"
+      window.history.replaceState(null, "", redirect);
+    }
+  })();
+</script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
