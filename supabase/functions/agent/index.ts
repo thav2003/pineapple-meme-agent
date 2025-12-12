@@ -49,6 +49,8 @@ serve(async (req) => {
       task,
     };
 
+    console.log("Sending payload to Swarms API:", JSON.stringify(payload, null, 2));
+
     const response = await fetch("https://api.swarms.world/v1/agent/completions", {
       method: "POST",
       headers: {
