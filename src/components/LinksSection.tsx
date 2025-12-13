@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, MessageCircle, Copy, LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
-// const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
-const TOKEN_ADDRESS = "5YCanL2s2aYuL44hd5FFyUoU7JjhP98JopvYwgY3pump";
+const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
+// const TOKEN_ADDRESS = "5YCanL2s2aYuL44hd5FFyUoU7JjhP98JopvYwgY3pump";
 interface LinkItem {
   title: string;
   description: string;
@@ -14,13 +14,13 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-  // {
-  //   title: "Swarms Agent",
-  //   description: "Try Pineapple Agent on Swarms marketplace",
-  //   url: "https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e",
-  //   icon: ExternalLink,
-  //   color: "primary"
-  // },
+  {
+    title: "Swarms Agent",
+    description: "Try Pineapple Agent on Swarms marketplace",
+    url: "https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e",
+    icon: ExternalLink,
+    color: "primary"
+  },
   {
     title: "Twitter / X",
     description: "Follow us for updates and memes",
@@ -53,7 +53,7 @@ export const LinksSection = () => {
         <p className="text-muted-foreground text-center mb-12">Be part of the pineapple revolution! 🍍🚀</p>
 
         {/* Links Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {links.map((link, index) => (
             <a
               key={link.title}
