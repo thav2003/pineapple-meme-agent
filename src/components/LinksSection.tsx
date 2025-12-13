@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, MessageCircle, Copy, LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
-const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
-
+// const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
+const TOKEN_ADDRESS = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 interface LinkItem {
   title: string;
   description: string;
