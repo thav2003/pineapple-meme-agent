@@ -3,7 +3,7 @@ import { ExternalLink, MessageCircle, Copy, LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 // const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
-const TOKEN_ADDRESS = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const TOKEN_ADDRESS = "5YCanL2s2aYuL44hd5FFyUoU7JjhP98JopvYwgY3pump";
 interface LinkItem {
   title: string;
   description: string;
