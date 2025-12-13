@@ -6,7 +6,7 @@ import { Copy, ExternalLink, MessageCircle, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 
 // const TOKEN_ADDRESS = "F99Z8SjGhNxx4anwZhed6pHyjU4KyptyTaAf2whvswrm";
-const TOKEN_ADDRESS = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const TOKEN_ADDRESS = "5YCanL2s2aYuL44hd5FFyUoU7JjhP98JopvYwgY3pump";
 export const HeroSection = () => {
   const copyAddress = () => {
     navigator.clipboard.writeText(TOKEN_ADDRESS);
