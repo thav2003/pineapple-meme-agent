@@ -74,14 +74,14 @@ export const HeroSection = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-          {/* <Button 
+          <Button 
             size="lg" 
             className="bg-primary text-primary-foreground hover:bg-primary/90 glow-primary font-bold text-lg px-8"
             onClick={() => window.open("https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e", "_blank")}
           >
             <ExternalLink className="w-5 h-5 mr-2" />
             Try Agent on Swarms
-          </Button> */}
+          </Button>
 
           <Button 
             asChild
