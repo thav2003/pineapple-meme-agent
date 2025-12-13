@@ -14,13 +14,13 @@ interface LinkItem {
 }
 
 const links: LinkItem[] = [
-  {
-    title: "Swarms Agent",
-    description: "Try Pineapple Agent on Swarms marketplace",
-    url: "https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e",
-    icon: ExternalLink,
-    color: "primary"
-  },
+  // {
+  //   title: "Swarms Agent",
+  //   description: "Try Pineapple Agent on Swarms marketplace",
+  //   url: "https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e",
+  //   icon: ExternalLink,
+  //   color: "primary"
+  // },
   {
     title: "Twitter / X",
     description: "Follow us for updates and memes",
