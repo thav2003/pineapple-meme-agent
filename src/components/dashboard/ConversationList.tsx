@@ -28,7 +28,7 @@ export function ConversationList({
   };
 
   const handleNew = () => {
-    onNew();
+    // onNew();
     navigate("/dashboard/chat");
   };
   return (
