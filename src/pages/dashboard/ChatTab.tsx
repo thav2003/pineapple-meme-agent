@@ -10,13 +10,28 @@ import type { ChatMessage } from "@/types/dashboard";
 import { DashboardContext } from "./DashboardContext";
 
 export default function ChatTab() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  const { ragContext, toolFlags, settings, addLog } = useContext(DashboardContext);
+  const { 
+    ragContext, 
+    toolFlags, 
+    settings, 
+    addLog,
+    messages,
+    currentConversationId,
+    addMessage,
+    createConversation,
+  } = useContext(DashboardContext);
+
+  // Convert DB messages to ChatMessage format
+  const chatMessages: ChatMessage[] = messages.map((m) => ({
+    role: m.role,
+    content: m.content,
+    ts: new Date(m.created_at).getTime(),
+  }));
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -26,20 +41,24 @@ export default function ChatTab() {
   }, [messages, isLoading]);
 
   const sendMessage = async (content: string) => {
-    const userMessage: ChatMessage = {
-      role: 'user',
-      content,
-      ts: Date.now(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
     setLastError(null);
 
     try {
-      const history = messages.map(m => ({ role: m.role, content: m.content }));
+      // Create conversation if none exists
+      let convId = currentConversationId;
+      if (!convId) {
+        convId = await createConversation();
+        if (!convId) throw new Error("Failed to create conversation");
+      }
 
-      const { data, error } = await supabase.functions.invoke('agent', {
+      // Add user message to DB
+      await addMessage("user", content);
+
+      // Get history from current messages
+      const history = chatMessages.map((m) => ({ role: m.role, content: m.content }));
+
+      const { data, error } = await supabase.functions.invoke("agent", {
         body: {
           message: content,
           history,
@@ -57,24 +76,18 @@ export default function ChatTab() {
         throw new Error(data.error);
       }
 
-      const assistantMessage: ChatMessage = {
-        role: 'assistant',
-        content: data.reply || 'No response received.',
-        ts: Date.now(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
+      // Add assistant message to DB
+      await addMessage("assistant", data.reply || "No response received.");
 
       addLog({
         latency: data.latency_ms || 0,
-        status: 'success',
-        message: content.substring(0, 50) + (content.length > 50 ? '...' : ''),
+        status: "success",
+        message: content.substring(0, 50) + (content.length > 50 ? "..." : ""),
       });
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       setLastError(errorMessage);
-      
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -83,7 +96,7 @@ export default function ChatTab() {
 
       addLog({
         latency: 0,
-        status: 'error',
+        status: "error",
         message: errorMessage,
       });
     } finally {
@@ -92,17 +105,9 @@ export default function ChatTab() {
   };
 
   const handleRetry = () => {
-    if (messages.length > 0) {
-      const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+    if (chatMessages.length > 0) {
+      const lastUserMessage = [...chatMessages].reverse().find((m) => m.role === "user");
       if (lastUserMessage) {
-        // Remove last assistant message if it was an error
-        setMessages((prev) => {
-          const lastIdx = prev.length - 1;
-          if (prev[lastIdx]?.role === 'assistant') {
-            return prev.slice(0, lastIdx);
-          }
-          return prev;
-        });
         sendMessage(lastUserMessage.content);
       }
     }
@@ -111,22 +116,21 @@ export default function ChatTab() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto">
       {/* Messages Area */}
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-4 pb-4 px-2"
-      >
-        {messages.length === 0 && !isLoading && (
+      <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-4 pb-4 px-2">
+        {chatMessages.length === 0 && !isLoading && (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
               <p className="text-2xl mb-2">🍍</p>
               <p className="text-muted-foreground">
-                Start chatting with Pineapple Agent!
+                {currentConversationId
+                  ? "Start chatting with Pineapple Agent!"
+                  : "Create a new chat or select an existing one"}
               </p>
             </div>
           </div>
         )}
 
-        {messages.map((msg, i) => (
+        {chatMessages.map((msg, i) => (
           <MessageBubble key={`${msg.ts}-${i}`} message={msg} />
         ))}
 
@@ -134,12 +138,7 @@ export default function ChatTab() {
 
         {lastError && !isLoading && (
           <div className="flex justify-center">
-            <Button
-              onClick={handleRetry}
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
+            <Button onClick={handleRetry} variant="outline" size="sm" className="gap-2">
               <RefreshCw className="w-4 h-4" />
               Retry
             </Button>

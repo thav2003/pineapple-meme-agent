@@ -1,6 +1,8 @@
 import { Outlet, useLocation } from "react-router-dom";
+import { useContext } from "react";
 import { Sidebar } from "./Sidebar";
 import { Badge } from "@/components/ui/badge";
+import { DashboardContext } from "@/pages/dashboard/DashboardContext";
 
 const pageTitles: Record<string, string> = {
   "/dashboard/chat": "Chat",
@@ -14,10 +16,24 @@ export function DashboardLayout() {
   const location = useLocation();
   const title = pageTitles[location.pathname] || "Dashboard";
 
+  const {
+    conversations,
+    currentConversationId,
+    selectConversation,
+    createConversation,
+    deleteConversation,
+  } = useContext(DashboardContext);
+
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      
+      <Sidebar
+        conversations={conversations}
+        currentConversationId={currentConversationId}
+        onSelectConversation={selectConversation}
+        onNewConversation={createConversation}
+        onDeleteConversation={deleteConversation}
+      />
+
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="h-16 border-b border-border/50 flex items-center justify-between px-6 bg-background/80 backdrop-blur-sm">
