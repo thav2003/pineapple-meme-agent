@@ -105,14 +105,15 @@ export function useConversations() {
     );
   }, []);
 
-  // Add message to current conversation
-  const addMessage = useCallback(async (role: "user" | "assistant", content: string): Promise<Message | null> => {
-    if (!currentConversationId) return null;
+  // Add message to conversation (uses provided conversationId or current)
+  const addMessage = useCallback(async (role: "user" | "assistant", content: string, conversationId?: string): Promise<Message | null> => {
+    const targetConvId = conversationId || currentConversationId;
+    if (!targetConvId) return null;
 
     const { data, error } = await supabase
       .from("messages")
       .insert({
-        conversation_id: currentConversationId,
+        conversation_id: targetConvId,
         role,
         content,
       })
@@ -130,13 +131,13 @@ export function useConversations() {
     await supabase
       .from("conversations")
       .update({ updated_at: new Date().toISOString() })
-      .eq("id", currentConversationId);
+      .eq("id", targetConvId);
 
     // Auto-update title based on first user message
-    const currentConv = conversations.find((c) => c.id === currentConversationId);
+    const currentConv = conversations.find((c) => c.id === targetConvId);
     if (currentConv?.title === "New Chat" && role === "user") {
       const newTitle = content.substring(0, 40) + (content.length > 40 ? "..." : "");
-      await updateConversationTitle(currentConversationId, newTitle);
+      await updateConversationTitle(targetConvId, newTitle);
     }
 
     return data as Message;
