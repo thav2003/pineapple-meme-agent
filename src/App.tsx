@@ -35,6 +35,7 @@ const App = () => (
           >
             <Route index element={<Navigate to="/dashboard/chat" replace />} />
             <Route path="chat" element={<ChatTab />} />
+            <Route path="chat/:conversationId" element={<ChatTab />} />
             <Route path="rag" element={<RagTab />} />
             <Route path="tools" element={<ToolsTab />} />
             <Route path="settings" element={<SettingsTab />} />

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "@/components/dashboard/MessageBubble";
@@ -14,6 +15,8 @@ export default function ChatTab() {
   const [lastError, setLastError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { conversationId: urlConversationId } = useParams<{ conversationId?: string }>();
+  const navigate = useNavigate();
   
   const { 
     ragContext, 
@@ -24,7 +27,15 @@ export default function ChatTab() {
     currentConversationId,
     addMessage,
     createConversation,
+    selectConversation,
   } = useContext(DashboardContext);
+
+  // Sync URL conversationId with context
+  useEffect(() => {
+    if (urlConversationId && urlConversationId !== currentConversationId) {
+      selectConversation(urlConversationId);
+    }
+  }, [urlConversationId, currentConversationId, selectConversation]);
 
   // Convert DB messages to ChatMessage format
   const chatMessages: ChatMessage[] = messages.map((m) => ({
@@ -50,10 +61,12 @@ export default function ChatTab() {
       if (!convId) {
         convId = await createConversation();
         if (!convId) throw new Error("Failed to create conversation");
+        // Navigate to new conversation URL
+        navigate(`/dashboard/chat/${convId}`, { replace: true });
       }
 
-      // Add user message to DB
-      await addMessage("user", content);
+      // Add user message to DB (pass convId explicitly for new conversations)
+      await addMessage("user", content, convId);
 
       // Get history from current messages
       const history = chatMessages.map((m) => ({ role: m.role, content: m.content }));
@@ -76,8 +89,8 @@ export default function ChatTab() {
         throw new Error(data.error);
       }
 
-      // Add assistant message to DB
-      await addMessage("assistant", data.reply || "No response received.");
+      // Add assistant message to DB (pass convId explicitly)
+      await addMessage("assistant", data.reply || "No response received.", convId);
 
       addLog({
         latency: data.latency_ms || 0,

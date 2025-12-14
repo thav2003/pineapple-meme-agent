@@ -35,7 +35,7 @@ interface DashboardContextType {
   createConversation: (title?: string) => Promise<string | null>;
   deleteConversation: (id: string) => Promise<void>;
   selectConversation: (id: string) => Promise<void>;
-  addMessage: (role: "user" | "assistant", content: string) => Promise<Message | null>;
+  addMessage: (role: "user" | "assistant", content: string, conversationId?: string) => Promise<Message | null>;
 }
 
 export const DashboardContext = createContext<DashboardContextType>(
