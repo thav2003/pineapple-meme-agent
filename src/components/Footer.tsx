@@ -21,14 +21,14 @@ export const Footer = () => {
 
           {/* Social Links */}
           <div className="flex items-center gap-4">
-            {/* <a 
+            <a 
               href="https://swarms.world/prompt/0ff9cc2f-390a-4eb1-9d3d-3a045cd2682e"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center hover:bg-primary/30 transition-colors"
             >
               <ExternalLink className="w-5 h-5 text-primary" />
-            </a> */}
+            </a>
             <a 
               href="https://x.com/pine_swarms"
               target="_blank"
