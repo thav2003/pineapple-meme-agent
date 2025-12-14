@@ -1,6 +1,7 @@
-import { createContext, useState, ReactNode, useMemo, useCallback } from "react";
+import { createContext, useState, ReactNode, useMemo } from "react";
 import { useAgentLogs } from "@/hooks/useAgentLogs";
 import { useAgentSettings } from "@/hooks/useAgentSettings";
+import { useConversations, type Conversation, type Message } from "@/hooks/useConversations";
 import type { UploadedFile, LogEntry, AgentSettings } from "@/types/dashboard";
 
 interface DashboardContextType {
@@ -22,12 +23,24 @@ interface DashboardContextType {
 
   // Logs
   logs: LogEntry[];
-  addLog: (entry: Omit<LogEntry, 'id' | 'time'>) => void;
+  addLog: (entry: Omit<LogEntry, "id" | "time">) => void;
   clearLogs: () => void;
   exportLogs: () => void;
+
+  // Conversations
+  conversations: Conversation[];
+  currentConversationId: string | null;
+  messages: Message[];
+  isLoadingMessages: boolean;
+  createConversation: (title?: string) => Promise<string | null>;
+  deleteConversation: (id: string) => Promise<void>;
+  selectConversation: (id: string) => Promise<void>;
+  addMessage: (role: "user" | "assistant", content: string) => Promise<Message | null>;
 }
 
-export const DashboardContext = createContext<DashboardContextType>({} as DashboardContextType);
+export const DashboardContext = createContext<DashboardContextType>(
+  {} as DashboardContextType
+);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   // RAG State
@@ -41,12 +54,24 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const { settings, updateTemperature } = useAgentSettings();
   const { logs, addLog, clearLogs, exportLogs } = useAgentLogs();
 
+  // Conversations Hook
+  const {
+    conversations,
+    currentConversationId,
+    messages,
+    isLoading: isLoadingMessages,
+    createConversation,
+    deleteConversation,
+    selectConversation,
+    addMessage,
+  } = useConversations();
+
   // Computed RAG context
   const ragContext = useMemo(() => {
     if (!useRagContext) return null;
-    const readyFiles = files.filter(f => f.status === 'ready' && f.content);
+    const readyFiles = files.filter((f) => f.status === "ready" && f.content);
     if (readyFiles.length === 0) return null;
-    return readyFiles.map(f => `[${f.name}]\n${f.content}`).join('\n\n---\n\n');
+    return readyFiles.map((f) => `[${f.name}]\n${f.content}`).join("\n\n---\n\n");
   }, [files, useRagContext]);
 
   // Tool flags for API
@@ -71,6 +96,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     addLog,
     clearLogs,
     exportLogs,
+    conversations,
+    currentConversationId,
+    messages,
+    isLoadingMessages,
+    createConversation,
+    deleteConversation,
+    selectConversation,
+    addMessage,
   };
 
   return (
